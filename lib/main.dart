@@ -52,7 +52,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final List<Transaction> _transactions = [
-    Transaction(
+/*    Transaction(
       id: 't0',
       title: 'Cartão',
       value: 195.00,
@@ -71,6 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
       value: 99.00,
       date: DateTime.now().subtract(const Duration(days: 4)),
     ),
+  */
   ];
 
   List<Transaction> get _recentTransactions {
@@ -79,12 +80,12 @@ class _MyHomePageState extends State<MyHomePage> {
     }).toList();
   }
 
-  _addTransaction(String title, double value) {
+  _addTransaction(String title, double value, DateTime date) {
     final newTransaction = Transaction(
       id: Random().nextDouble().toString(),
       title: title,
       value: value,
-      date: DateTime.now(),
+      date: date,
     );
 
     setState(() {
@@ -92,6 +93,13 @@ class _MyHomePageState extends State<MyHomePage> {
     });
 
     Navigator.of(context).pop();
+  }
+
+  _removeTransaction(String id) {
+    setState(() {
+      _transactions.removeWhere((tr) => tr.id == id);
+      // é igual a {(return tr.id == id});
+    });
   }
 
   _openTransactionFormModal(BuildContext context) {
@@ -124,13 +132,14 @@ class _MyHomePageState extends State<MyHomePage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(_recentTransactions),
-            TransactionList(_transactions),
+            TransactionList(_transactions, _removeTransaction),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => _openTransactionFormModal(context),
+        backgroundColor: Colors.green,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
